@@ -3,7 +3,7 @@ import hashlib
 import json
 import os, string, random
 from bottle import default_app, route, run, redirect, request, response, template, get, post
-from cryptography.fernet import Fernet
+from cryptography.fernet  import Fernet
 
 def to_bytes(s):
     return s.encode("utf-8")
@@ -151,7 +151,7 @@ def get_login():
     current_user = '-'
     if os.path.isfile(session_id + "-session.json"):
         with open(session_id + "-session.json","w") as f:
-            data = json.load(f))
+            data = json.load(f)
             current_user = data['user']
     if current_user != "-":
         return "Sorry, you have to sign out first."
@@ -176,7 +176,7 @@ def post_login():
         data = {
             "user":'-'
             }
-        json.dump(data,f))
+        json.dump(data,f)
 
     user = user.strip()
 
@@ -203,7 +203,7 @@ def post_login():
         data = {
             "user":user
             }
-        json.dump(data,f))
+        json.dump(data,f)
     return f"ok, it looks like you logged in as {user}"
 
 @route('/logout')
@@ -213,7 +213,7 @@ def get_logout():
         data = {
             "user":'-'
             }
-        json.dump(data,f))
+        json.dump(data,f)
 
 if 'PYTHONANYWHERE_DOMAIN' in os.environ:
     application = default_app()
