@@ -57,18 +57,18 @@ def get_secret():
 
     if user == "-":
         return 'You need to log in to enter a secret!'
-    with open(f'data/{user}-profile.json', "r") as f:
+    with open(f'mysite/data/{user}-profile.json', "r") as f:
         profile = json.load(f)
         key = profile['key']
     try:
-        with open(f'data/{user}-secret.json', "r") as f:
+        with open(f'mysite/data/{user}-secret.json', "r") as f:
             data = json.load(f)
             encrypted_secret = data['secret']
         secret = decrypt(encrypted_secret, key)
     except:
         secret = ""
 
-    return template("views/secret.tpl", secret=secret)
+    return template("mysite/views/secret.tpl", secret=secret)
 
 
 @post('/secret')
@@ -81,13 +81,13 @@ def post_secret():
             user = data['user']
     if user == "-":
         return 'You need to log in to enter a secret!'
-    with open(f'data/{user}-profile.json', "r") as f:
+    with open(f'mysite/data/{user}-profile.json', "r") as f:
         profile = json.load(f)
         favorite_color = profile['favorite_color']
         key = profile['key']
     secret = request.forms.get('secret', None)
     encrypted_secret = encrypt(secret, key)
-    with open(f'data/{user}-secret.json', "w") as f:
+    with open(f'mysite/data/{user}-secret.json', "w") as f:
         json.dump({
             'secret': encrypted_secret,
         }, f)
@@ -107,7 +107,7 @@ def get_signup():
     current_user = request.cookies.get("user", "-")
     if current_user != "-":
         return "Sorry, you have to sign out first."
-    return template("views/signup.tpl")
+    return template("mysite/views/signup.tpl")
 
 
 @post('/signup')
@@ -127,7 +127,7 @@ def post_signup():
     if not user.isalnum():
         return "Sorry, the user name must be letters and digits"
     # if user exists, then that's an error
-    if os.path.isfile(f'data/{user}-profile.json'):
+    if os.path.isfile(f'mysite/data/{user}-profile.json'):
         return "Sorry, that user name is taken"
 
     if len(password) < 6:
@@ -147,7 +147,7 @@ def post_signup():
     if favorite_color.strip() == "":
         favorite_color = "unknown"
 
-    with open(f'data/{user}-profile.json',"w") as f:
+    with open(f'mysite/data/{user}-profile.json',"w") as f:
       json.dump({
               'salt': salt,
               'password-hash': hash_known_password,
@@ -170,7 +170,7 @@ def get_login():
             current_user = data['user']
     if current_user != "-":
         return "Sorry, you have to sign out first."
-    return template("views/login.tpl")
+    return template("mysite/views/login.tpl")
 
 
 @post('/login')
@@ -200,12 +200,12 @@ def post_login():
         return "Sorry, the user name must be letters and digits"
 
     # see if user exists
-    filename = f'data/{user}-profile.json'
+    filename = f'mysite/data/{user}-profile.json'
     if not os.path.isfile(filename):
         return "Sorry, no such user"
 
     # fetch password
-    with open(f'data/{user}-profile.json', "r") as f:
+    with open(f'mysite/data/{user}-profile.json', "r") as f:
         data = json.load(f)
 
     # check password correctness
